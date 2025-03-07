@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 
 @Controller('users') // these will handle the /users route
 export class UsersController {
@@ -31,5 +31,15 @@ export class UsersController {
   @Post() // this will handle the post /users route to create a new user
   create(@Body() user: {}) {
     return user; // return a message that user has been created
+  }
+
+  @Patch(':id') // this will handle the patch /users/:id route to update a user
+  update(@Param('id') id: string, @Body() userUpdate: {}) {
+    return { id, ...userUpdate }; // return a single user
+  }
+
+  @Delete(':id') // this will handle the delete /users/:id route to delete a user
+  delete(@Param('id') id: string) {
+    return { id }; // return a single user
   }
 }
