@@ -10,6 +10,8 @@ import {
   Query,
 } from '@nestjs/common';
 // ParseIntPipe is a pipe that will parse the parameter to an integer
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 import { UsersService } from './users.service';
 
@@ -46,26 +48,18 @@ export class UsersController {
   @Post() // this will handle the post /users route to create a new user
   create(
     @Body()
-    user: {
-      name: string;
-      email: string;
-      role: 'INTERN' | 'EMPLOYEES' | 'ADMIN';
-    },
+    createuserdto: CreateUserDto,
   ) {
-    return this.usersService.create(user); // return a message that user has been created
+    return this.usersService.create(createuserdto); // return a message that user has been created
   }
 
   @Patch(':id') // this will handle the patch /users/:id route to update a user
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body()
-    updatedUser: {
-      name?: string;
-      email?: string;
-      role?: 'INTERN' | 'EMPLOYEES' | 'ADMIN';
-    },
+    updateuserdto: UpdateUserDto,
   ) {
-    return this.usersService.update(id, updatedUser); // return a single user
+    return this.usersService.update(id, updateuserdto); // return a single user
   }
 
   @Delete(':id') // this will handle the delete /users/:id route to delete a user
