@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  ValidationPipe,
 } from '@nestjs/common';
 // ParseIntPipe is a pipe that will parse the parameter to an integer
 import { CreateUserDto } from './dto/create-user.dto';
@@ -47,7 +48,7 @@ export class UsersController {
 
   @Post() // this will handle the post /users route to create a new user
   create(
-    @Body()
+    @Body(ValidationPipe)
     createuserdto: CreateUserDto,
   ) {
     return this.usersService.create(createuserdto); // return a message that user has been created
@@ -56,7 +57,7 @@ export class UsersController {
   @Patch(':id') // this will handle the patch /users/:id route to update a user
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body()
+    @Body(ValidationPipe)
     updateuserdto: UpdateUserDto,
   ) {
     return this.usersService.update(id, updateuserdto); // return a single user
