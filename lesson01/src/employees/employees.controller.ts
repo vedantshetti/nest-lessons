@@ -6,16 +6,21 @@ import {
   Patch,
   Param,
   Delete,
+  Ip,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { Prisma } from '@prisma/client';
 import { Query } from '@nestjs/common';
 import { Throttle, SkipThrottle } from '@nestjs/throttler';
+import { MyLoggerService } from 'src/my-logger/my-logger.service';
 
 @SkipThrottle({})
 @Controller('employees')
 export class EmployeesController {
-  constructor(private readonly employeesService: EmployeesService) {}
+  constructor(
+    private readonly employeesService: EmployeesService,
+    private readonly logger: MyLoggerService, // ✅ Correct Dependency Injection
+  ) {}
 
   @Post()
   create(@Body() createEmployeeDto: Prisma.EmployeeCreateInput) {
@@ -24,17 +29,19 @@ export class EmployeesController {
 
   @SkipThrottle({ default: false })
   @Get()
-  findAll(@Query('role') role?: 'INTERN' | 'EMPLOYEES' | 'ADMIN') {
+  findAll(
+    @Ip() ip: string,
+    @Query('role') role?: 'INTERN' | 'EMPLOYEES' | 'ADMIN',
+  ) {
+    this.logger.log(`IP: ${ip}`, 'EmployeesController');
     return this.employeesService.findAll(role);
   }
 
-  // @Throttle({ limit: 1, ttl: 60 })
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.employeesService.findOne(+id);
   }
-
 
   @Patch(':id')
   update(
